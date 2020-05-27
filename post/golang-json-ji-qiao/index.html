@@ -1,0 +1,570 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Golang 中使用 JSON 的小技巧 | 乐于分享</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://lper.github.io/favicon.ico?v=1590559741980">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://lper.github.io/styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://lper.github.io">
+  <img class="avatar" src="https://lper.github.io/images/avatar.png?v=1590559741980" alt="">
+  </a>
+  <h1 class="site-title">
+    乐于分享
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/lper" target="_blank">
+          <i class="fab fa-github"></i>
+        </a>
+      
+    
+      
+    
+      
+        <a href="https://www.weibo.com/lperzone" target="_blank">
+          <i class="fab fa-weibo"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Golang 中使用 JSON 的小技巧
+            </h2>
+            <div class="post-info">
+              <span>
+                2020-05-27
+              </span>
+              <span>
+                8 min read
+              </span>
+              
+                <a href="https://lper.github.io/tag/1lL86x10y/" class="post-tag">
+                  # golang json
+                </a>
+              
+                <a href="https://lper.github.io/tag/b-Us8BmQcL/" class="post-tag">
+                  # json技巧
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <p><a href="https://github.com/taowen">taowen</a> 是 <a href="https://github.com/json-iterator/go">json-iterator</a> 的作者。 序列化和反序列化需要处理 JSON 和 struct 的关系，其中会用到一些技巧。 原文 <a href="http://jsoniter.com/go-tips.cn.html">Golang 中使用 JSON 的小技巧</a>是他的经验之谈，介绍了一些 struct 解析成 json 的技巧，以及 json-iterator 库的一些便利的处理。</p>
+<p>有的时候上游传过来的字段是 string 类型的，但是我们却想用变成数字来使用。 本来用一个 json:&quot;,string&quot; 就可以支持了，如果不知道 golang 的这些小技巧，就要大费周章了。</p>
+<p>参考文章：<a href="http://attilaolah.eu/2014/09/10/json-and-struct-composition-in-go/">http://attilaolah.eu/2014/09/10/json-and-struct-composition-in-go/</a></p>
+<h3 id="临时忽略-struct-空字段">临时忽略 struct 空字段</h3>
+<pre><code>type User struct {
+
+    Email    string `json:&quot;email&quot;`
+
+    Password string `json:&quot;password&quot;`
+
+}
+</code></pre>
+<p>如果想临时忽略掉空<code>Password</code>字段, 可以用<code>omitempty</code>:</p>
+<pre><code>json.Marshal(struct {
+
+    *User
+
+    Password bool `json:&quot;password,omitempty&quot;`
+
+}{
+
+    User: user,
+
+})
+</code></pre>
+<h3 id="临时添加额外的字段">临时添加额外的字段</h3>
+<pre><code>type User struct {
+
+    Email    string `json:&quot;email&quot;`
+
+    Password string `json:&quot;password&quot;`
+
+}
+</code></pre>
+<p>临时忽略掉空<code>Password</code>字段，并且添加<code>token</code>字段</p>
+<pre><code>json.Marshal(struct {
+
+    *User
+
+    Token    string `json:&quot;token&quot;`
+
+    Password bool `json:&quot;password,omitempty&quot;`
+
+}{
+
+    User: user,
+
+    Token: token,
+
+})
+</code></pre>
+<h3 id="临时粘合两个-struct">临时粘合两个 struct</h3>
+<p>通过嵌入 struct 的方式:</p>
+<pre><code>type BlogPost struct {
+
+    URL   string `json:&quot;url&quot;`
+
+    Title string `json:&quot;title&quot;`
+
+}
+
+type Analytics struct {
+
+    Visitors  int `json:&quot;visitors&quot;`
+
+    PageViews int `json:&quot;page_views&quot;`
+
+}
+
+json.Marshal(struct{
+
+    *BlogPost
+
+    *Analytics
+
+}{post, analytics})
+</code></pre>
+<h3 id="一个-json-切分成两个-struct">一个 json 切分成两个 struct</h3>
+<pre><code>json.Unmarshal([]byte(`{
+
+  &quot;url&quot;: &quot;attila@attilaolah.eu&quot;,
+
+  &quot;title&quot;: &quot;Attila's Blog&quot;,
+
+  &quot;visitors&quot;: 6,
+
+  &quot;page_views&quot;: 14
+
+}`), &amp;struct {
+
+  *BlogPost
+
+  *Analytics
+
+}{&amp;post, &amp;analytics})
+</code></pre>
+<h3 id="临时改名-struct-的字段">临时改名 struct 的字段</h3>
+<pre><code>type CacheItem struct {
+
+    Key    string `json:&quot;key&quot;`
+
+    MaxAge int    `json:&quot;cacheAge&quot;`
+
+    Value  Value  `json:&quot;cacheValue&quot;`
+
+}
+
+json.Marshal(struct{
+
+    *CacheItem
+
+    OmitMaxAge omit `json:&quot;cacheAge,omitempty&quot;`
+
+    OmitValue  omit `json:&quot;cacheValue,omitempty&quot;`
+
+    MaxAge int    `json:&quot;max_age&quot;`
+
+    Value  *Value `json:&quot;value&quot;`
+
+}{
+
+    CacheItem: item,
+
+    MaxAge: item.MaxAge,
+
+    Value: &amp;item.Value,
+
+})
+</code></pre>
+<h3 id="用字符串传递数字">用字符串传递数字</h3>
+<pre><code>type TestObject struct {
+
+    Field1 int    `json:&quot;,string&quot;`
+
+}
+</code></pre>
+<p>这个对应的 json 是 <code>{&quot;Field1&quot;: &quot;100&quot;}</code></p>
+<p>如果 json 是 <code>{&quot;Field1&quot;: 100}</code> 则会报错</p>
+<h3 id="容忍字符串和数字互转">容忍字符串和数字互转</h3>
+<p>如果你使用的是 jsoniter，可以启动<strong>模糊模式</strong>来支持 PHP 传递过来的 JSON。</p>
+<pre><code>import &quot;github.com/json-iterator/go/extra&quot;
+
+extra.RegisterFuzzyDecoders()
+</code></pre>
+<p>这样就可以处理字符串和数字类型不对的问题了。比如</p>
+<pre><code>var val string
+
+jsoniter.UnmarshalFromString(`100`, &amp;val)
+</code></pre>
+<p>又比如</p>
+<pre><code>var val float32
+
+jsoniter.UnmarshalFromString(`&quot;1.23&quot;`, &amp;val)
+</code></pre>
+<h3 id="容忍空数组作为对象">容忍空数组作为对象</h3>
+<p>PHP 另外一个令人崩溃的地方是，如果 PHP array 是空的时候，序列化出来是<code>[]</code>。但是不为空的时候，序列化出来的是<code>{&quot;key&quot;:&quot;value&quot;}</code>。 我们需要把 <code>[]</code> 当成 <code>{}</code> 处理。</p>
+<p>如果你使用的是 jsoniter，可以启动模糊模式来支持 PHP 传递过来的 JSON。</p>
+<pre><code>import &quot;github.com/json-iterator/go/extra&quot;
+
+extra.RegisterFuzzyDecoders()
+</code></pre>
+<p>这样就可以支持了</p>
+<pre><code>var val map[string]interface{}
+
+jsoniter.UnmarshalFromString(`[]`, &amp;val)
+</code></pre>
+<h3 id="使用-marshaljson-支持-timetime">使用 MarshalJSON 支持 time.Time</h3>
+<p>golang 默认会把 <code>time.Time</code> 用字符串方式序列化。如果我们想用其他方式表示 <code>time.Time</code>，需要自定义类型并定义 <code>MarshalJSON</code>。</p>
+<pre><code>type timeImplementedMarshaler time.Time
+
+func (obj timeImplementedMarshaler) MarshalJSON() ([]byte, error) {
+
+    seconds := time.Time(obj).Unix()
+
+return []byte(strconv.FormatInt(seconds, 10)), nil
+
+}
+</code></pre>
+<p>序列化的时候会调用 MarshalJSON</p>
+<pre><code>type TestObject struct {
+
+    Field timeImplementedMarshaler
+
+}
+
+should := require.New(t)
+
+val := timeImplementedMarshaler(time.Unix(123, 0))
+
+obj := TestObject{val}
+
+bytes, err := jsoniter.Marshal(obj)
+
+should.Nil(err)
+
+should.Equal(`{&quot;Field&quot;:123}`, string(bytes))
+</code></pre>
+<h3 id="使用-registertypeencoder-支持-timetime">使用 RegisterTypeEncoder 支持 time.Time</h3>
+<p>jsoniter 能够对不是你定义的 type 自定义 JSON 编解码方式。比如对于 <code>time.Time</code> 可以用 epoch int64 来序列化</p>
+<pre><code>import &quot;github.com/json-iterator/go/extra&quot;
+
+extra.RegisterTimeAsInt64Codec(time.Microsecond)
+
+output, err := jsoniter.Marshal(time.Unix(1, 1002))
+
+should.Equal(&quot;1000001&quot;, string(output))
+</code></pre>
+<p>如果要自定义的话，参见 <code>RegisterTimeAsInt64Codec</code> 的实现代码</p>
+<h3 id="使用-marshaltext-支持非字符串作为-key-的-map">使用 MarshalText 支持非字符串作为 key 的 map</h3>
+<p>虽然 JSON 标准里只支持 <code>string</code> 作为 <code>key</code> 的 <code>map</code>。但是 golang 通过 <code>MarshalText()</code> 接口，使得其他类型也可以作为 <code>map</code> 的 <code>key</code>。例如</p>
+<pre><code>f, _, _ := big.ParseFloat(&quot;1&quot;, 10, 64, big.ToZero)
+
+val := map[*big.Float]string{f: &quot;2&quot;}
+
+str, err := MarshalToString(val)
+
+should.Equal(`{&quot;1&quot;:&quot;2&quot;}`, str)
+</code></pre>
+<p>其中 <code>big.Float</code> 就实现了 <code>MarshalText()</code></p>
+<h3 id="使用-jsonrawmessage">使用 json.RawMessage</h3>
+<p>如果部分 json 文档没有标准格式，我们可以把原始的信息用<code>[]byte</code>保存下来。</p>
+<pre><code>type TestObject struct {
+
+    Field1 string
+
+    Field2 json.RawMessage
+
+}
+
+var data TestObject
+
+json.Unmarshal([]byte(`{&quot;field1&quot;: &quot;hello&quot;, &quot;field2&quot;: [1,2,3]}`), &amp;data)
+
+should.Equal(` [1,2,3]`, string(data.Field2))
+</code></pre>
+<h3 id="使用-jsonnumber">使用 json.Number</h3>
+<p>默认情况下，如果是 <code>interface{}</code> 对应数字的情况会是 <code>float64</code> 类型的。如果输入的数字比较大，这个表示会有损精度。所以可以 <code>UseNumber()</code> 启用 <code>json.Number</code> 来用字符串表示数字。</p>
+<pre><code>decoder1 := json.NewDecoder(bytes.NewBufferString(`123`))
+
+decoder1.UseNumber()
+
+var obj1 interface{}
+
+decoder1.Decode(&amp;obj1)
+
+should.Equal(json.Number(&quot;123&quot;), obj1)
+</code></pre>
+<p>jsoniter 支持标准库的这个用法。同时，扩展了行为使得 <code>Unmarshal</code> 也可以支持 <code>UseNumber</code> 了。</p>
+<pre><code>json := Config{UseNumber:true}.Froze()
+
+var obj interface{}
+
+json.UnmarshalFromString(&quot;123&quot;, &amp;obj)
+
+should.Equal(json.Number(&quot;123&quot;), obj)
+</code></pre>
+<h3 id="统一更改字段的命名风格">统一更改字段的命名风格</h3>
+<p>经常 JSON 里的字段名 Go 里的字段名是不一样的。我们可以用 field tag 来修改。</p>
+<pre><code>output, err := jsoniter.Marshal(struct {
+
+    UserName      string `json:&quot;user_name&quot;`
+
+    FirstLanguage string `json:&quot;first_language&quot;`
+
+}{
+
+    UserName:      &quot;taowen&quot;,
+
+    FirstLanguage: &quot;Chinese&quot;,
+
+})
+
+should.Equal(`{&quot;user_name&quot;:&quot;taowen&quot;,&quot;first_language&quot;:&quot;Chinese&quot;}`, string(output))
+</code></pre>
+<p>但是一个个字段来设置，太麻烦了。如果使用 jsoniter，我们可以统一设置命名风格。</p>
+<pre><code>import &quot;github.com/json-iterator/go/extra&quot;
+
+extra.SetNamingStrategy(LowerCaseWithUnderscores)
+
+output, err := jsoniter.Marshal(struct {
+
+    UserName      string
+
+    FirstLanguage string
+
+}{
+
+    UserName:      &quot;taowen&quot;,
+
+    FirstLanguage: &quot;Chinese&quot;,
+
+})
+
+should.Nil(err)
+
+should.Equal(`{&quot;user_name&quot;:&quot;taowen&quot;,&quot;first_language&quot;:&quot;Chinese&quot;}`, string(output))
+</code></pre>
+<h3 id="使用私有的字段">使用私有的字段</h3>
+<p>Go 的标准库只支持 public 的 field。jsoniter 额外支持了 private 的 field。需要使用 <code>SupportPrivateFields()</code> 来开启开关。</p>
+<pre><code>import &quot;github.com/json-iterator/go/extra&quot;
+
+extra.SupportPrivateFields()
+
+type TestObject struct {
+
+    field1 string
+
+}
+
+obj := TestObject{}
+
+jsoniter.UnmarshalFromString(`{&quot;field1&quot;:&quot;Hello&quot;}`, &amp;obj)
+
+should.Equal(&quot;Hello&quot;, obj.field1)
+</code></pre>
+<p>下面是我补充的内容</p>
+<h3 id="忽略掉一些字段">忽略掉一些字段</h3>
+<p>原文中第一节有个错误，我更正过来了。<code>omitempty</code>不会忽略某个字段，而是忽略空的字段，当字段的值为空值的时候，它不会出现在 JSON 数据中。</p>
+<p>如果想忽略某个字段，需要使用 <code>json:&quot;-&quot;</code>格式。</p>
+<pre><code>type User struct {
+
+    Email    string `json:&quot;email&quot;`
+
+    Password string `json:&quot;password&quot;`
+
+}
+</code></pre>
+<p>如果想临时忽略掉空<code>Password</code>字段, 可以用<code>-</code>:</p>
+<pre><code>json.Marshal(struct {
+
+    *User
+
+    Password bool `json:&quot;-&quot;`
+
+}{
+
+    User: user,
+
+})
+</code></pre>
+<h3 id="忽略掉一些字段-2">忽略掉一些字段 2</h3>
+<p>如果不想更改原 struct, 还可以使用下面的方法：</p>
+<pre><code>type User struct {
+
+    Email    string `json:&quot;email&quot;`
+
+    Password string `json:&quot;password&quot;`
+
+}
+
+type omit *struct{}
+
+type PublicUser struct {
+
+    *User
+
+    Password omit `json:&quot;-&quot;`
+
+}
+
+json.Marshal(PublicUser{
+
+    User: user,
+
+})
+</code></pre>
+<p>[<strong>Newer</strong></p>
+<p>了解 Go 1.9 的类型别名</p>
+<p>](https://colobu.com/2017/06/26/learn-go-type-aliases/)[<strong>Older</strong></p>
+<p>Go 1.9 的新特性</p>
+<p>](https://colobu.com/2017/06/20/what-s-new-in-Go-1-9/)</p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#%E4%B8%B4%E6%97%B6%E5%BF%BD%E7%95%A5-struct-%E7%A9%BA%E5%AD%97%E6%AE%B5">临时忽略 struct 空字段</a></li>
+<li><a href="#%E4%B8%B4%E6%97%B6%E6%B7%BB%E5%8A%A0%E9%A2%9D%E5%A4%96%E7%9A%84%E5%AD%97%E6%AE%B5">临时添加额外的字段</a></li>
+<li><a href="#%E4%B8%B4%E6%97%B6%E7%B2%98%E5%90%88%E4%B8%A4%E4%B8%AA-struct">临时粘合两个 struct</a></li>
+<li><a href="#%E4%B8%80%E4%B8%AA-json-%E5%88%87%E5%88%86%E6%88%90%E4%B8%A4%E4%B8%AA-struct">一个 json 切分成两个 struct</a></li>
+<li><a href="#%E4%B8%B4%E6%97%B6%E6%94%B9%E5%90%8D-struct-%E7%9A%84%E5%AD%97%E6%AE%B5">临时改名 struct 的字段</a></li>
+<li><a href="#%E7%94%A8%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%BC%A0%E9%80%92%E6%95%B0%E5%AD%97">用字符串传递数字</a></li>
+<li><a href="#%E5%AE%B9%E5%BF%8D%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%92%8C%E6%95%B0%E5%AD%97%E4%BA%92%E8%BD%AC">容忍字符串和数字互转</a></li>
+<li><a href="#%E5%AE%B9%E5%BF%8D%E7%A9%BA%E6%95%B0%E7%BB%84%E4%BD%9C%E4%B8%BA%E5%AF%B9%E8%B1%A1">容忍空数组作为对象</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8-marshaljson-%E6%94%AF%E6%8C%81-timetime">使用 MarshalJSON 支持 time.Time</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8-registertypeencoder-%E6%94%AF%E6%8C%81-timetime">使用 RegisterTypeEncoder 支持 time.Time</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8-marshaltext-%E6%94%AF%E6%8C%81%E9%9D%9E%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%BD%9C%E4%B8%BA-key-%E7%9A%84-map">使用 MarshalText 支持非字符串作为 key 的 map</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8-jsonrawmessage">使用 json.RawMessage</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8-jsonnumber">使用 json.Number</a></li>
+<li><a href="#%E7%BB%9F%E4%B8%80%E6%9B%B4%E6%94%B9%E5%AD%97%E6%AE%B5%E7%9A%84%E5%91%BD%E5%90%8D%E9%A3%8E%E6%A0%BC">统一更改字段的命名风格</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8%E7%A7%81%E6%9C%89%E7%9A%84%E5%AD%97%E6%AE%B5">使用私有的字段</a></li>
+<li><a href="#%E5%BF%BD%E7%95%A5%E6%8E%89%E4%B8%80%E4%BA%9B%E5%AD%97%E6%AE%B5">忽略掉一些字段</a></li>
+<li><a href="#%E5%BF%BD%E7%95%A5%E6%8E%89%E4%B8%80%E4%BA%9B%E5%AD%97%E6%AE%B5-2">忽略掉一些字段 2</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://lper.github.io/post/ru-he-tou-zi-zi-ji-ke-xing-fang-fa-lun-fu-zeng-gong-ju-biao-ge/">
+              <h3 class="post-title">
+                如何投资自己（可行方法论：附赠工具表格）
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://lper.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+
+  let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+  // This should probably be throttled.
+  // Especially because it triggers during smooth scrolling.
+  // https://lodash.com/docs/4.17.10#throttle
+  // You could do like...
+  // window.addEventListener("scroll", () => {
+  //    _.throttle(doThatStuff, 100);
+  // });
+  // Only not doing it here to keep this Pen dependency-free.
+
+  window.addEventListener("scroll", event => {
+    let fromTop = window.scrollY;
+
+    mainNavLinks.forEach((link, index) => {
+      let section = document.getElementById(decodeURI(link.hash).substring(1));
+      let nextSection = null
+      if (mainNavLinks[index + 1]) {
+        nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+      }
+      console.log('section.offsetHeight', section.offsetHeight);
+      if (section.offsetTop <= fromTop) {
+        if (nextSection) {
+          if (nextSection.offsetTop > fromTop) {
+            link.classList.add("current");
+          } else {
+            link.classList.remove("current");    
+          }
+        } else {
+          link.classList.add("current");
+        }
+      } else {
+        link.classList.remove("current");
+      }
+    });
+  });
+
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>
