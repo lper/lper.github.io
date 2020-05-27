@@ -1,0 +1,397 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>[译] 如何写好 Go 代码 | 乐于分享</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://lper.github.io/favicon.ico?v=1590561912505">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://lper.github.io/styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://lper.github.io">
+  <img class="avatar" src="https://lper.github.io/images/avatar.png?v=1590561912505" alt="">
+  </a>
+  <h1 class="site-title">
+    乐于分享
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/lper" target="_blank">
+          <i class="fab fa-github"></i>
+        </a>
+      
+    
+      
+    
+      
+        <a href="https://www.weibo.com/lperzone" target="_blank">
+          <i class="fab fa-weibo"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              [译] 如何写好 Go 代码
+            </h2>
+            <div class="post-info">
+              <span>
+                2020-05-27
+              </span>
+              <span>
+                14 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <blockquote>
+<p>原文：<a href="https://scene-si.org/2018/07/24/writing-great-go-code/">scene-si.org/2018/07/24/…</a></p>
+</blockquote>
+<p>我写了多年的 Go 微服务，并在写完两本关于 (<a href="https://leanpub.com/api-foundations">API Foundations in Go</a> 和 <a href="https://leanpub.com/12fa-docker-golang">12 Factor Applications with Docker and Go</a>) 主题的书之后，有了一些关于如何写好 Go 代码的想法</p>
+<p>但首先，我想给阅读这篇文章的读者解释一点。好代码是主观的。你可能对于好代码这一点，有完全不同的想法，而我们可能只对其中一部分意见一致。另一方面，我们可能都没有错，只是我们从两个角度出发，从而选择了不同的方式解决工程问题，并不意味着意见不一致的不是好代码。</p>
+<h2 id="包">包</h2>
+<p>包很重要，你可能会反对 - 但是如果你在用 Go 写微服务，<em>你可以将所有代码放在一个包中</em>。当然，下面也有一些反对的观点：</p>
+<ol>
+<li>将定义的类型放入单独的包中</li>
+<li>维护与传输无关的服务层</li>
+<li>在服务层之外，维护一个数据存储 (repository) 层</li>
+</ol>
+<p>我们可以计算一下，一个微服务包的最小数量是 1。如果你有一个大型的微服务，它拥有 websocket 和 http 网关，你最终可能需要 5 个包（类型，数据存储，服务，websocket 和 http 包）。</p>
+<p>简单的微服务实际上并不关心从数据存储层 (repository)，或者从传输层(websocket，http) 抽离业务逻辑。你可以写简单的代码，转换数据然后响应，也是可以运行的。但是，添加更多的包可以解决一些问题。例如，如果你熟悉 SOLID 原则，<code>S</code> 代表单一职责。如果我们拆分成包，这些包就可以是单一职责的。</p>
+<ul>
+<li><code>types</code> - 声明一些结构，可能还有一些结构的别名等</li>
+<li><code>repository</code> - 数据存储层，用来处理存储和读取结构</li>
+<li><code>service</code> - 服务层，包装存储层的具体业务逻辑实现</li>
+<li><code>http</code>, <code>websocket</code>, … - 传输层，用来调用服务层</li>
+</ul>
+<p>当然，根据你使用的情况，还可以进一步细分，例如，可以使用<code>types/request</code> 和 <code>types/response</code> 来更好的分隔一些结构。这样就可以拥有 <code>request.Message</code> 和<code>response.Message</code> 而不是 <code>MessageRequest</code>和 <code>MessageResponse</code>。如果一开始就像这样拆分开，可能会更有意义。</p>
+<p>但是，为了强调最初的观点 - 如果你只用了这些声明包中的一部分，也没什么影响。像 Docker 这样的大型项目在 <code>server</code> 包下只使用了 <code>types</code> 包，这是它真正需要的。它使用的其他包（像 errors 包），可能是第三方包。</p>
+<p>同样需要注意的是，在一个包中，共享正在处理的结构和函数会很容易。如果你有相互依赖的结构，将它们拆分为两个或多个不同的包可能会导致<a href="https://www.well-typed.com/blog/2008/04/the-dreaded-diamond-dependency-problem/">钻石依赖问题</a>。解决方案也很显然 - 将代码放到一块儿，或者将所有代码放在一个包中。</p>
+<p>到底选哪一个呢？两种方法都行。如果我非要按规则来的话，将其拆分更多的包可能会使添加新代码变得麻烦。因为你可能要修改这些包才能添加单个 API 调用。如果不是很清楚如何布局，那么在包之间跳转可能会带来一些认知上的开销。在很多情况下，如果项目只有一两个包，阅读代码会更容易。</p>
+<p>你肯定也不想要太多的小包。</p>
+<h2 id="错误">错误</h2>
+<p>如果是描述性的 Errors 可能是开发人员检查生产问题的唯一工具。这就是为什么我们要优雅地处理错误，要么将它们一直传递到应有程序的某一层，如果错误无法处理，该层就接收错误并记录下来，这一点非常重要。以下是标准库错误类型缺少的一些特性：</p>
+<ul>
+<li>错误信息不含堆栈跟踪</li>
+<li>不能堆积错误</li>
+<li>errors 是预实例化的</li>
+</ul>
+<p>但是，通过使用第三方错误包 (我最喜欢的是 <a href="https://github.com/pkg/errors">pkg/Errors</a>) 可以帮助解决这些问题。也有其他的第三方错误包，但是这个是 <a href="https://dave.cheney.net">Dave Cheney</a> (Go 语言大神) 编写的，它在错误处理的方式在一定程度上是一种标准。他的文章 <a href="https://dave.cheney.net/2016/04/27/dont-just-check-errors-handle-them-gracefully">Don’t just check errors, handle them gracefully</a> 是推荐必读的。</p>
+<h3 id="错误的堆栈跟踪">错误的堆栈跟踪</h3>
+<p><code>pkg/errors</code> 包在调用 <code>errors.New</code> 时，会将上下文 (堆栈跟踪) 添加到新建的错误中。</p>
+<pre><code>users_test.go:34: testing error Hello world
+        github.com/crusttech/crust/rbac_test.TestUsers
+                /go/src/github.com/crusttech/crust/rbac/users_test.go:34
+        testing.tRunner
+                /usr/local/go/src/testing/testing.go:777
+        runtime.goexit
+                /usr/local/go/src/runtime/asm_amd64.s:2361
+复制代码
+
+</code></pre>
+<p>考虑到完整的错误信息是 &quot;Hello world&quot;，使用 <code>fmt.Printf</code> 带有<code>%+v</code> 的参数或者类似的方式来打印少量的上下文 - 对于查找错误的而言，是一件很棒的事。你可以确切知道是哪里创建了错误（关键字）。当然，当涉及到标准库时，<code>errors</code> 包和本地 <code>error</code> 类型 - 不提供堆栈跟踪。但是，使用 <code>pkg/errors</code> 可以很容易地添加一个。例如：</p>
+<pre><code>resp, err := u.Client.Post(fmt.Sprintf(resourcesCreate, resourceID), body)
+if err != nil {
+        return errors.Wrap(err, &quot;request failed&quot;)
+}
+复制代码
+
+</code></pre>
+<p>在上面这个例子中，<code>pkg/errors</code>包将上下文添加 err 中，加的错误消息 (<code>&quot;request failed&quot;</code>) 和堆栈跟踪都会抛出来。通过调用 <code>errors.Wrap</code> 来添加堆栈跟踪，所以你可以精准追踪到此行的错误。</p>
+<h3 id="堆积错误">堆积错误</h3>
+<p>你的文件系统，数据库，或者其他可能抛出相对不太好描述的错误。例如，Mysql 可能会抛出这种强制错误：</p>
+<pre><code>ERROR 1146 (42S02): Table 'test.no_such_table' doesn't exist
+复制代码
+
+</code></pre>
+<p>这不是很好处理。然而，你可以使用 <code>errors.Wrap(err，&quot;database aseError&quot;)</code> 在上面堆积新的错误。这样，就可以更好地处理 <code>&quot;databaseError&quot;</code> 等。<code>pkg/errors</code> 包将在 <code>causer</code> 接口后面保留实际的错误信息。</p>
+<pre><code>type causer interface {
+       Cause() error
+}
+复制代码
+
+</code></pre>
+<p>这样，错误堆积在一起，不会丢失任何上下文。附带说一下，mysql 错误是一个<a href="https://github.com/go-sql-driver/mysql/blob/a8b7ed4454a6a4f98f85d3ad558cd6d97cec6959/errors.go#L58">类型错误</a>，其背后包含的不仅仅是错误字符串的信息。这意味着它有可能被处理的更好：</p>
+<pre><code>if driverErr, ok := err.(*mysql.MySQLError); ok {
+    if driverErr.Number == mysqlerr.ER_ACCESS_DENIED_ERROR {
+        // Handle the permission-denied error
+    }
+}
+复制代码
+
+</code></pre>
+<p>此例子来自于 <a href="https://stackoverflow.com/questions/47009068/how-to-get-the-mysql-error-type-in-golang">this stackoverflow thread</a>。</p>
+<h3 id="错误预实例化">错误预实例化</h3>
+<p>究竟什么是错误 (error) 呢？非常简单，错误需要实现下面的接口：</p>
+<pre><code>type error interface {
+	Error() string
+}
+复制代码
+
+</code></pre>
+<p>在 <code>net/http</code> 的例子中，这个包将几种错误类型暴露为变量，如<a href="https://golang.org/pkg/net/http/#pkg-variables">文档</a>所示。在这里添加堆栈跟踪是不可能的（Go 不允许对全局 var 声明可执行代码，只能进行类型声明）。其次，如果标准库将堆栈跟踪添加到错误中 - 它不会指向返回错误的位置，而是指向声明变量（全局变量）的位置。</p>
+<p>这意味着，你仍然需要在后面的代码中强制调用类似于 <code>return errors.WithStack(ErrNotSupported)</code> 的代码。这也不是很痛苦，但不幸的是，你不能只导入 <code>pkg/errors</code> ，就让所有现有的错误都带有堆栈跟踪。如果你还没有使用 <code>errors.New</code> 来实例化你的错误，那么它需要一些手动调用。</p>
+<h2 id="日志">日志</h2>
+<p>接下来是日志，或者更恰当的说，结构化日志。这里提供了许多软件包，类似于 <a href="https://github.com/sirupsen/logrus">sirupsen/logrus</a> 或我最喜欢的 <a href="https://github.com/apex/log">APEX/LOG</a>。这些包也支持将日志发送到远程的机器或者服务，我们可以用工具来监控这些日志。</p>
+<p>当谈到标准日志包时，我不常看到的一个选项是创建一个自定义 logger，并将 <code>log.LShorfile</code> 或 <code>log.LUTC</code> 等标志传递给它，以再次获得一点上下文，这能让你的工作变轻松 - 尤其在处理不同时区的服务器时。</p>
+<pre><code>const (
+        Ldate         = 1 &lt;&lt; iota     // the date in the local time zone: 2009/01/23
+        Ltime                         // the time in the local time zone: 01:23:23
+        Lmicroseconds                 // microsecond resolution: 01:23:23.123123.  assumes Ltime.
+        Llongfile                     // full file name and line number: /a/b/c/d.go:23
+        Lshortfile                    // final file name element and line number: d.go:23. overrides Llongfile
+        LUTC                          // if Ldate or Ltime is set, use UTC rather than the local time zone
+        LstdFlags     = Ldate | Ltime // initial values for the standard logger
+)
+复制代码
+
+</code></pre>
+<p>即使你没有创建自定义 logger，你也可以使用 <code>SetFlags</code> 来修改默认 logger。(<a href="https://play.golang.org/p/jlplSGTDoyI">playground link</a>)：</p>
+<pre><code>package main
+
+import (
+	&quot;log&quot;
+)
+
+func main() {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	log.Println(&quot;Hello, playground&quot;)
+}
+复制代码
+
+</code></pre>
+<p>结果如下：</p>
+<pre><code>2009/11/10 23:00:00 main.go:9: Hello, playground
+复制代码
+
+</code></pre>
+<p>你不想知道你在哪里打印了日志吗？这会让跟踪代码变得更容易。</p>
+<h2 id="接口">接口</h2>
+<p>如果你正在写接口并命名接口中的参数，请考虑以下的代码片段：</p>
+<pre><code>type Mover interface {
+	Move(context.Context, string, string) error
+}
+复制代码
+
+</code></pre>
+<p>你知道这里的参数代表什么吗？只需要在接口中使用命名参数就可以让它很清晰。</p>
+<pre><code>type Mover interface {
+	Move(context.Context, source string, destination string)
+}
+复制代码
+
+</code></pre>
+<p>我还经常看到一些使用一个具体类型作为返回值的接口。一种未得到充分利用的做法是，根据一些已知的结构体或接口参数，以某种方式声明接口，然后在接收器中填充结果。这可能是 Go 中最强大的接口之一。</p>
+<pre><code>type Filler interface {
+	Fill(r *http.Request) error
+}
+
+func (s *YourStruct) Fill(r *http.Request) error {
+	// here you write your code...
+}
+复制代码
+
+</code></pre>
+<p>更可能的是，一个或多个结构体可以实现该接口。如下：</p>
+<pre><code>type RequestParser interface {
+	Parse(r *http.Request) (*types.ServiceRequest, error)
+}
+复制代码
+
+</code></pre>
+<p>此接口返回具体类型（而不是接口）。通常，这样的代码会使你代码库中的接口变得杂乱无章，因为每个接口只有一个实现，并且在你的应用包结构之外会变得不可用。</p>
+<h3 id="小帖士">小帖士</h3>
+<p>如果你希望在编译时确保你的结构体符合并完全实现一个接口（或多个接口），你可以这么做：</p>
+<pre><code>var _ io.Reader = &amp;YourStruct{}
+var _ fmt.Stringer = &amp;YourStruct{}
+复制代码
+
+</code></pre>
+<p>如果你缺少这些接口所需的某些函数，编译器就会报错。字符 <code>_</code> 表示丢弃变量，所以没有副作用，编译器完全优化了这些代码，会忽视这些被丢弃的行。</p>
+<h2 id="空接口">空接口</h2>
+<p>与上面的观点相比，这可能是更有争议的观点 - 但是我觉得使用 <code>interface{}</code> 有时非常有效。在 HTTP API 响应的例子中，最后一步通常是 json 编码，它接收一个接口参数：</p>
+<pre><code>func (enc *Encoder) Encode(v interface{}) error
+复制代码
+
+</code></pre>
+<p>因此，完全可以避免将 API 响应设置成具体类型。我并不建议对所有情况都这么处理，但是在某些情况下，可以在 API 中完全忽略响应的具体类型，或者至少说明具体类型声明的意义。脑海中浮现的一个例子是使用匿名结构体。</p>
+<pre><code>body := struct {
+	Username string   `json:&quot;username&quot;`
+	Roles    []string `json:&quot;roles,omitempty&quot;`
+}{username, roles}
+复制代码
+
+</code></pre>
+<p>首先，不使用 <code>interface{}</code> 的话，无法从函数里返回这种结构体。显然，json 编码器可以接受任何类型的内容，因此，按传递空接口 (对我来说) 是完全有意义的。虽然趋势是声明具体类型，但有时候你可能不需要一层中间层。对于包含某些逻辑并可能返回各种形式的匿名结构体的函数，空接口也很合适。</p>
+<blockquote>
+<p>更正：匿名结构体不是不可能返回，只是做起来很麻烦：<a href="https://play.golang.org/p/turu_Yg--6h">playground</a></p>
+<ul>
+<li>感谢 @Ikearens at <a href="https://discord.gg/quNN7yP">Discord Gophers</a> #golang channel</li>
+</ul>
+</blockquote>
+<p>第二个用例是数据库驱动的 API 设计，我之前写过一些<a href="https://scene-si.org/2018/02/07/sql-as-an-api/">有关内容</a>，我想指出的是，实现一个完全由数据库驱动的 API 是非常可能的。这也意味着添加和修改字段是_仅仅在数据库中_完成的，而不会以 ORM 的形式添加额外的间接层。显然，你仍然需要声明类型才能在数据库中插入数据，但是从数据库中读取数据可以省略声明。</p>
+<pre><code>// getThread fetches comments by data, order by ID
+func (api *API) getThread(params *CommentListThread) (comments []interface{}, err error) {
+	// calculate pagination parameters
+	start := params.PageNumber * params.PageSize
+	length := params.PageSize
+	query := fmt.Sprintf(&quot;select * from comments where news_id=? and self_id=? and visible=1 and deleted=0 order by id %s limit %d, %d&quot;, params.Order, start, length)
+	err = api.db.Select(&amp;comments, query, params.NewsID, params.SelfID)
+	return
+}
+复制代码
+
+</code></pre>
+<p>同样，你的应用程序可能充当反向代理，或者只使用无模式 (schema-less) 的数据库存储。在这些情况下，目的只是传递数据。</p>
+<p>一个大警告 (这是你需要输入结构体的地方) 是，修改 Go 中的接口值并不是一件容易的事。你必须将它们强制转换为各种内容，如 map、slice 或结构体，以便可以在访问这些返回的数据。如果你不能保持结构体一成不变，而只是将它从 DB(或其他后端服务)传递到 JSON 编码器(会涉及到断言成具体类型)，那么显然这个模式不适合你。这种情况下不应该存在这样的空接口代码。也就是说，当你不想了解任何关于载荷的信息时，空接口就是你需要的。</p>
+<h2 id="代码生成">代码生成</h2>
+<p>尽可能使用代码生成。如果你想生成用于测试的 mock，如果你想生成 proc/GRPC 代码，或者你可能拥有的任何类型的代码生成，可以直接生成代码并提交。在发生冲突的情况下，可以随时将其丢弃，然后重新生成。</p>
+<p>唯一可能的例外是提交类似于 <code>public_html</code> 文件夹的内容，其中包含你将使用 <a href="https://github.com/rakyll/statik">rakyll/statik</a> 打包的内容。如果有人想告诉我，由 <a href="https://github.com/golang/mock">gomock</a> 生成的代码在每次提交时都会以兆字节的数据污染 GIT 历史记录？不会的。</p>
+<h2 id="结束语">结束语</h2>
+<p>关于 Go 的最佳实践和最差实践的另一本值得注意的好书应该是 <a href="https://about.sourcegraph.com/go/idiomatic-go/">Idiomatic Go</a>。 如果你不熟悉的话，可以阅读一下 - 它是与本文很好的搭配。</p>
+<p>我想在这里引用 <a href="https://blog.codinghorror.com/the-best-code-is-no-code-at-all/">Jeff Atwood post - The Best Code is No Code At All</a> 文章的一句话，这是一句令人难忘的结束语：</p>
+<blockquote>
+<p>如果你真的喜欢写代码，你会非常喜欢尽可能少地写代码。</p>
+</blockquote>
+<p>但是，一定要编写那些单元测试。<em>完结</em>。</p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%8C%85">包</a></li>
+<li><a href="#%E9%94%99%E8%AF%AF">错误</a>
+<ul>
+<li><a href="#%E9%94%99%E8%AF%AF%E7%9A%84%E5%A0%86%E6%A0%88%E8%B7%9F%E8%B8%AA">错误的堆栈跟踪</a></li>
+<li><a href="#%E5%A0%86%E7%A7%AF%E9%94%99%E8%AF%AF">堆积错误</a></li>
+<li><a href="#%E9%94%99%E8%AF%AF%E9%A2%84%E5%AE%9E%E4%BE%8B%E5%8C%96">错误预实例化</a></li>
+</ul>
+</li>
+<li><a href="#%E6%97%A5%E5%BF%97">日志</a></li>
+<li><a href="#%E6%8E%A5%E5%8F%A3">接口</a>
+<ul>
+<li><a href="#%E5%B0%8F%E5%B8%96%E5%A3%AB">小帖士</a></li>
+</ul>
+</li>
+<li><a href="#%E7%A9%BA%E6%8E%A5%E5%8F%A3">空接口</a></li>
+<li><a href="#%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90">代码生成</a></li>
+<li><a href="#%E7%BB%93%E6%9D%9F%E8%AF%AD">结束语</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://lper.github.io/post/golang-json-ji-qiao/">
+              <h3 class="post-title">
+                Golang 中使用 JSON 的小技巧
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://lper.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+
+  let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+  // This should probably be throttled.
+  // Especially because it triggers during smooth scrolling.
+  // https://lodash.com/docs/4.17.10#throttle
+  // You could do like...
+  // window.addEventListener("scroll", () => {
+  //    _.throttle(doThatStuff, 100);
+  // });
+  // Only not doing it here to keep this Pen dependency-free.
+
+  window.addEventListener("scroll", event => {
+    let fromTop = window.scrollY;
+
+    mainNavLinks.forEach((link, index) => {
+      let section = document.getElementById(decodeURI(link.hash).substring(1));
+      let nextSection = null
+      if (mainNavLinks[index + 1]) {
+        nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+      }
+      console.log('section.offsetHeight', section.offsetHeight);
+      if (section.offsetTop <= fromTop) {
+        if (nextSection) {
+          if (nextSection.offsetTop > fromTop) {
+            link.classList.add("current");
+          } else {
+            link.classList.remove("current");    
+          }
+        } else {
+          link.classList.add("current");
+        }
+      } else {
+        link.classList.remove("current");
+      }
+    });
+  });
+
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>
