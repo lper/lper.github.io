@@ -1,0 +1,419 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>走进 Golang 之 Channel 的使用 | 乐于分享</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://lper.github.io/favicon.ico?v=1590634871708">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://lper.github.io/styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://lper.github.io">
+  <img class="avatar" src="https://lper.github.io/images/avatar.png?v=1590634871708" alt="">
+  </a>
+  <h1 class="site-title">
+    乐于分享
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/lper" target="_blank">
+          <i class="fab fa-github"></i>
+        </a>
+      
+    
+      
+    
+      
+        <a href="https://www.weibo.com/lperzone" target="_blank">
+          <i class="fab fa-weibo"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              走进 Golang 之 Channel 的使用
+            </h2>
+            <div class="post-info">
+              <span>
+                2020-05-28
+              </span>
+              <span>
+                10 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <p>对于 Golang 语言应用层面的知识，先讲如何正确的使用，然后再讲它的实现。</p>
+<h1 id="channel-是什么">channel 是什么</h1>
+<blockquote>
+<p>Don't communicate by sharing memory, share memory by communicating.</p>
+</blockquote>
+<p>相信写过 Go 的同学都知道这句名言，可以说 channel 就是后边这句话的具体实现。我们来看一下到底 channel 是什么？</p>
+<p>channel 是一个类型安全的队列（循环队列），能够控制 groutine 在它上面读写消息的行为，比如：阻塞某个 groutine ，或者唤醒某个 groutine。</p>
+<p>不同的 groutine 可以通过 channel 交换任意的资源，由于 channel 能够控制 groutine 的行为，所以 CSP 模型才能在 Golang 中顺利实现，它确保了不同 groutine 之间的数据同步机制。</p>
+<p>上面的话是不是听起来非常的不舒服？</p>
+<p>好吧，简单说人话就是，channel 是用来在 <strong>不同的</strong> 的 goroutine 中交换数据的。一定要注意这里 <strong>不同的</strong> 三个字。千万不要把 channel 拿来在不同函数（同一个 goroutine 中）间交换数据。</p>
+<h1 id="使用">使用</h1>
+<p>知道了定义，我们来看具体如何使用。</p>
+<p>如何定义一个 channel 类型呢？</p>
+<pre><code>var ch1 chan int // 定义了一个 int 类型的 channel，没有初始化，是 nil
+
+ch2 := make(chan int) // 定义+初始化了一个无缓冲的 int 类型 channel
+ch3 := make(chan int) // 定义+初始化了一个有缓冲的 int 类型 channel
+复制代码
+
+</code></pre>
+<p>上面的定义方法我们都是定义的双向通道，对应的还有单向通道，但是单向通道我们一般只是做为函数参数来进行一些限制，并不会在定义、初始化时就搞一个单向通道出来。因为你定义一个单向通道没有任何实际价值，通道的存在本来就是用来交换数据的，单向通道只能满足发或者收。</p>
+<p>下面我们一起来看一下具体的使用，以及使用中注意的一些点。</p>
+<h2 id="send">send</h2>
+<p>不管是有缓冲的通道还是无缓冲的通道都是用来交换数据的，既然是交换数据，无非就是写入、读取。我们先从发送开始。</p>
+<h3 id="无缓冲-channel">无缓冲 channel</h3>
+<pre><code>ch := make(chan int)
+defer close(ch)
+
+//ch&lt;-5 // 位置一
+
+go func(ch chan int) {
+    num := &lt;-ch
+    fmt.Println(num)
+}(ch)
+
+// ch&lt;-5 // 位置二
+
+复制代码
+
+</code></pre>
+<p>如果我们打开 <strong>位置一</strong> 的注释，程序是无法获得预期执行的，由于该 channel 是无缓冲的，位置一的代码会陷入阻塞，下一行的 goroutine 根本没有机会执行。整个代码会陷入死锁。</p>
+<p>正确的操作是，打开 <strong>位置二</strong> 的注释，因为上一行 goroutine 先行启动，他是一个独立的协程，不会阻塞主 groutine 的执行，但它内部会阻塞在 <code>num := &lt;-ch</code> 这行代码，直到主协程执行完 <code>ch&lt;-5</code> ，才会执行打印。所以这里也有一个非常重要的问题，主协程如果不等待子协程执行完就退出的话，会看不到执行结果。</p>
+<p>这里先提一点，无缓冲的 channel 并不会用到内部结构体的 <code>buf</code> ，这部分具体会在源码部分讲解他们的数据存取、交换的方式。</p>
+<h3 id="有缓冲-channel">有缓冲 channel</h3>
+<pre><code>ch := make(chan int, 1) // 注意这里
+defer close(ch)
+
+//ch&lt;-5 // 位置一
+
+go func(ch chan int) {
+    num := &lt;-ch
+    fmt.Println(num)
+}(ch)
+
+// ch&lt;-5 // 位置二
+复制代码
+
+</code></pre>
+<p>代码基本没有改变，唯一的区别是 make 函数传入了第二个参数，这个值的含义是缓冲的大小。那么此时 <strong>位置一</strong> 与 <strong>位置二</strong> 都能够正常执行吗？</p>
+<p>答案是肯定的，此时的代码，无论是那个位置，打开注释后都能够正常执行。原因就在于由于 channel 有了缓存区域，<strong>位置一</strong> 写入数据不会造成主协程的阻塞，那么下一行代码的子协程就可以正常启动，并直接将位置一写入 <code>buf</code> 的数据读取出来打印。</p>
+<p>对于 <strong>位置二</strong> ，由于子协程先启动，但是会被阻塞在 <code>num := &lt;-ch</code> 这一行，因为此时 <code>buf</code> 中没有任何内容可读取（下期源码分析我们可以看代码实现），直到位置二执行完，唤醒子协程。</p>
+<p>发送需要注意几个问题：</p>
+<ol>
+<li>
+<p>什么时候会被阻塞？</p>
+<ul>
+<li>
+<p>向 <code>nil</code> 通道发送数据会被阻塞</p>
+</li>
+<li>
+<p>向无缓冲 channel 写数据，如果读协程没有准备好，会阻塞</p>
+</li>
+<li>
+<p>向有缓冲 channel 写数据，如果缓冲已满，会阻塞</p>
+</li>
+</ul>
+</li>
+<li>
+<p>什么时候会 <code>panic</code>？</p>
+<ul>
+<li>closed 的 channel，写数据会 panic</li>
+</ul>
+</li>
+<li>
+<p>就算是有缓冲的 channel ，也不是每次发送、接收都要经过缓存，如果发送的时候，刚好有等待接收的协程，那么会直接交换数据。</p>
+</li>
+</ol>
+<h2 id="receive">receive</h2>
+<p>有写入，必然后读取。</p>
+<p>还是上面的代码， <code>num := &lt;-ch</code> 就是从 channel 读取数据。对于读取就不按照有缓冲与无缓冲来讲解了，它们的主要问题是什么时候阻塞。通过上面写的例子自己再想想即可。</p>
+<p>这里说下读取的两种形式。</p>
+<p><strong>形式一</strong></p>
+<blockquote>
+<p>multi-valued assignment</p>
+</blockquote>
+<pre><code>v, ok := &lt;-ch
+复制代码
+
+</code></pre>
+<p><code>ok</code> 是一个 bool 类型，可以通过它来判断 channel 是否已经关闭，如果关闭该值为 true ，此时 v 接收到的是 channel 类型的零值。比如： channel 是传递的 int， 那么 v 就是 0 ；如果是结构体，那么 v 就是结构体内部对应字段的零值。</p>
+<p><strong>形式二</strong></p>
+<pre><code>v := &lt;-ch
+复制代码
+
+</code></pre>
+<p>该方式对于关闭的 channel 无法掌控，我们示例中就是该种方式。</p>
+<p>接收需要注意几个问题：</p>
+<ol>
+<li>
+<p>什么时候会被阻塞？</p>
+<ul>
+<li>
+<p>从 <code>nil</code> 通道接收数据会被阻塞</p>
+</li>
+<li>
+<p>从无缓冲 channel 读数据，如果写协程没有准备好，会阻塞</p>
+</li>
+<li>
+<p>从有缓冲 channel 读数据，如果缓冲为空，会阻塞</p>
+</li>
+</ul>
+</li>
+<li>
+<p>读取的 channel 如果被关闭，并不会影响正在读的数据，它会将所有数据读取完毕，并不会立即就失败或者返回零值</p>
+</li>
+</ol>
+<h2 id="close">close</h2>
+<p>对于 channel 的关闭，在什么地方去关闭呢？因为上面也讲到向 closed 的 channel 写或者继续 close 都会导致 panic 问题。</p>
+<p>一般的建议是谁写入，谁负责关闭。如果涉及到多个写入的协程、多个读取的协程？又该如何关闭？总的来说就是加入一个标记避免重复关闭。不过真的不建议搞的太复杂，否则后续维护代码会疯掉。</p>
+<p>关闭需要注意几个问题：</p>
+<ol>
+<li>
+<p>什么时候会 <code>panic</code>？</p>
+<ul>
+<li>closed 的 channel，再次关闭 close 会 panic</li>
+</ul>
+</li>
+</ol>
+<h2 id="for-range">for-range</h2>
+<p>我们常常会用 <code>for-range</code> 来读取 channel 的数据。</p>
+<pre><code>ch := make(chan int, 1)
+
+go func(ch chan int) {
+    for i := 0; i &lt; 10; i++ {
+        ch &lt;- i
+    }
+    close(ch)
+}(ch)
+
+for val := range ch {
+    fmt.Println(val)
+}
+复制代码
+
+</code></pre>
+<p>该语句的一个特色是如果 channel 已经被关闭，它还是会继续执行，直到所有值被取完，然后退出执行。而如果通道没有关闭，但是 channel 没有可读取的数据，它则会阻塞在 range 这句位置，直到被唤醒。但是如果 channel 是 nil，那么同样符合我们上面说的的原则，读取会被阻塞，也就是会一直阻塞在 <code>range</code> 位置。</p>
+<h2 id="select">select</h2>
+<p><code>select</code> 是跟 channel 关系最亲密的语句，它是被专门设计出来处理通道的，因为每个 case 后面跟的都是通道表达式，可以是读，也可以是写。</p>
+<pre><code>ch := make(chan int)
+q := make(chan int)
+
+go func(ch, q chan int) {
+    for i := 0; i &lt; 10; i++ {
+        num := &lt;-ch
+        fmt.Println(num)
+    }
+    q &lt;- 1
+}(ch, q)
+
+fibonacci := func(ch, q chan int) {
+    x, y := 0, 1
+    for {
+        select {
+        case ch &lt;- x: // 写入
+            x, y = y, x+y
+            break // 你觉得是否会影响 for 语句的循环？
+        case &lt;-q: // 读取
+            fmt.Println(&quot;quit&quot;)
+            return
+        }
+    }
+}
+fibonacci(ch, q)
+复制代码
+
+</code></pre>
+<p>上面的代码是利用 channel 实现的一个斐波拉契数列。select 还可以有 default 语句，该语句会在其它 case 都被阻塞的情况下执行。</p>
+<p>关注的问题</p>
+<ol>
+<li>
+<p>select 只要有默认语句，就不会被阻塞，换句话说，如果没有 default，然后 case 又都不能读或者写，则会被阻塞</p>
+</li>
+<li>
+<p>nil 的 channel，不管读写都会被阻塞</p>
+</li>
+<li>
+<p>select 不能够像 <code>for-range</code> 一样发现 channel 被关闭而终止执行，所以需要结合 <code>multi-valued assignment</code> 来处理</p>
+</li>
+<li>
+<p>如果同时有多个 case 满足了条件，会使用伪随机选择一个 case 来执行</p>
+</li>
+<li>
+<p>select 语句如果不配合 for 语句使用，只会对 case 表达式求值一次</p>
+</li>
+<li>
+<p>每次 select 语句的执行，是会扫码完所有的 case 后才确定如何执行，而不是说遇到合适的 case 就直接执行了。</p>
+</li>
+</ol>
+<h1 id="总结">总结</h1>
+<p>本文内容很简单易懂，希望大家彻底掌握了 channel 的使用。一切源码的研究都是为了更好的使用，后面的文章将开始研究 channel 的源码实现。</p>
+<p>本文几个重要问题再次总结下，也是经常面试的常考点。</p>
+<ol>
+<li>
+<p>向 close 的 channel 写数据、再次 close 都会触发 <code>runtime panic</code>。</p>
+</li>
+<li>
+<p>向 nil channel 写、读取数据，都会阻塞，可以利用这点来优化 for + select 的用法。</p>
+</li>
+<li>
+<p>channel 的关闭最好在写入方处理，读的协程不要去关闭 channel，可以通过单向通道来表明 channel 在该位置的功能。</p>
+</li>
+<li>
+<p>如果有多个写协程的 channel 需要关闭，可以使用额外的 channel 来标记，也可以使用 <code>sync.Once</code> 或者 <code>sync.Mutex</code> 来处理。</p>
+</li>
+<li>
+<p>channel 不管是读写都是并发安全的，不会出现多个协程同时读或者写的情况，从而实现了 CSP。</p>
+</li>
+</ol>
+<p><strong>参考资料</strong></p>
+<ul>
+<li>
+<p>[1] <a href="https://colobu.com/2016/04/14/Golang-Channels/">Go Channel 详解</a></p>
+</li>
+<li>
+<p>[2] <a href="https://www.ardanlabs.com/blog/2014/02/the-nature-of-channels-in-go.html">The Nature Of Channels In Go</a></p>
+</li>
+</ul>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#channel-%E6%98%AF%E4%BB%80%E4%B9%88">channel 是什么</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8">使用</a>
+<ul>
+<li><a href="#send">send</a>
+<ul>
+<li><a href="#%E6%97%A0%E7%BC%93%E5%86%B2-channel">无缓冲 channel</a></li>
+<li><a href="#%E6%9C%89%E7%BC%93%E5%86%B2-channel">有缓冲 channel</a></li>
+</ul>
+</li>
+<li><a href="#receive">receive</a></li>
+<li><a href="#close">close</a></li>
+<li><a href="#for-range">for-range</a></li>
+<li><a href="#select">select</a></li>
+</ul>
+</li>
+<li><a href="#%E6%80%BB%E7%BB%93">总结</a></li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://lper.github.io/post/yi-ru-he-xie-hao-go-dai-ma/">
+              <h3 class="post-title">
+                [译] 如何写好 Go 代码
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://lper.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+
+  let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+  // This should probably be throttled.
+  // Especially because it triggers during smooth scrolling.
+  // https://lodash.com/docs/4.17.10#throttle
+  // You could do like...
+  // window.addEventListener("scroll", () => {
+  //    _.throttle(doThatStuff, 100);
+  // });
+  // Only not doing it here to keep this Pen dependency-free.
+
+  window.addEventListener("scroll", event => {
+    let fromTop = window.scrollY;
+
+    mainNavLinks.forEach((link, index) => {
+      let section = document.getElementById(decodeURI(link.hash).substring(1));
+      let nextSection = null
+      if (mainNavLinks[index + 1]) {
+        nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+      }
+      console.log('section.offsetHeight', section.offsetHeight);
+      if (section.offsetTop <= fromTop) {
+        if (nextSection) {
+          if (nextSection.offsetTop > fromTop) {
+            link.classList.add("current");
+          } else {
+            link.classList.remove("current");    
+          }
+        } else {
+          link.classList.add("current");
+        }
+      } else {
+        link.classList.remove("current");
+      }
+    });
+  });
+
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>
