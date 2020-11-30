@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://lper.cn</id>
     <title>乐于分享</title>
-    <updated>2020-11-30T11:30:44.610Z</updated>
+    <updated>2020-11-30T11:47:13.040Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://lper.cn"/>
     <link rel="self" href="https://lper.cn/atom.xml"/>
@@ -10,6 +10,13 @@
     <logo>https://lper.cn/images/avatar.png</logo>
     <icon>https://lper.cn/favicon.ico</icon>
     <rights>All rights reserved 2020, 乐于分享</rights>
+    <entry>
+        <title type="html"><![CDATA[新的`Idea2020.2.4` 版本激活]]></title>
+        <id>https://lper.cn/post/xin-de-idea202024-ban-ben-ji-huo/</id>
+        <link href="https://lper.cn/post/xin-de-idea202024-ban-ben-ji-huo/">
+        </link>
+        <updated>2020-11-30T11:42:17.000Z</updated>
+    </entry>
     <entry>
         <title type="html"><![CDATA[多种GitHub加速方式]]></title>
         <id>https://lper.cn/post/duo-chong-github-jia-su-fang-shi/</id>
@@ -72,12 +79,5 @@
         <link href="https://lper.cn/post/golang-json-ji-qiao/">
         </link>
         <updated>2020-05-27T06:07:37.000Z</updated>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[如何投资自己（可行方法论：附赠工具表格）]]></title>
-        <id>https://lper.cn/post/ru-he-tou-zi-zi-ji-ke-xing-fang-fa-lun-fu-zeng-gong-ju-biao-ge/</id>
-        <link href="https://lper.cn/post/ru-he-tou-zi-zi-ji-ke-xing-fang-fa-lun-fu-zeng-gong-ju-biao-ge/">
-        </link>
-        <updated>2020-05-26T07:32:22.000Z</updated>
     </entry>
 </feed>
