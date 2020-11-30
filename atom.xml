@@ -1,82 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-    <id>https://lper.github.io</id>
+    <id>https://lper.cn</id>
     <title>乐于分享</title>
-    <updated>2020-11-30T10:43:13.117Z</updated>
+    <updated>2020-11-30T10:45:01.974Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
-    <link rel="alternate" href="https://lper.github.io"/>
-    <link rel="self" href="https://lper.github.io/atom.xml"/>
+    <link rel="alternate" href="https://lper.cn"/>
+    <link rel="self" href="https://lper.cn/atom.xml"/>
     <subtitle>温故而知新</subtitle>
-    <logo>https://lper.github.io/images/avatar.png</logo>
-    <icon>https://lper.github.io/favicon.ico</icon>
+    <logo>https://lper.cn/images/avatar.png</logo>
+    <icon>https://lper.cn/favicon.ico</icon>
     <rights>All rights reserved 2020, 乐于分享</rights>
     <entry>
         <title type="html"><![CDATA[多种GitHub加速方式]]></title>
-        <id>https://lper.github.io/post/duo-chong-github-jia-su-fang-shi/</id>
-        <link href="https://lper.github.io/post/duo-chong-github-jia-su-fang-shi/">
+        <id>https://lper.cn/post/duo-chong-github-jia-su-fang-shi/</id>
+        <link href="https://lper.cn/post/duo-chong-github-jia-su-fang-shi/">
         </link>
         <updated>2020-11-27T06:58:45.000Z</updated>
     </entry>
     <entry>
         <title type="html"><![CDATA[72% 网民收入不足 5k，月薪过万在中国职场到底算什么水平？]]></title>
-        <id>https://lper.github.io/post/72-ping/</id>
-        <link href="https://lper.github.io/post/72-ping/">
+        <id>https://lper.cn/post/72-ping/</id>
+        <link href="https://lper.cn/post/72-ping/">
         </link>
         <updated>2020-06-02T02:51:02.000Z</updated>
     </entry>
     <entry>
         <title type="html"><![CDATA[微信最强更新，微信号可以改名了]]></title>
-        <id>https://lper.github.io/post/weiwin-update-06-01/</id>
-        <link href="https://lper.github.io/post/weiwin-update-06-01/">
+        <id>https://lper.cn/post/weiwin-update-06-01/</id>
+        <link href="https://lper.cn/post/weiwin-update-06-01/">
         </link>
         <updated>2020-06-01T05:19:46.000Z</updated>
     </entry>
     <entry>
         <title type="html"><![CDATA[存款超过 50 万对中国人而言多不多？]]></title>
-        <id>https://lper.github.io/post/50-wan-duo-bu-duo/</id>
-        <link href="https://lper.github.io/post/50-wan-duo-bu-duo/">
+        <id>https://lper.cn/post/50-wan-duo-bu-duo/</id>
+        <link href="https://lper.cn/post/50-wan-duo-bu-duo/">
         </link>
         <updated>2020-06-01T03:58:33.000Z</updated>
     </entry>
     <entry>
         <title type="html"><![CDATA[3 种堆内缓存算法【FIFO VS LRU VS LFU】]]></title>
-        <id>https://lper.github.io/post/CACHE-FIFO-VS-LRU-VS-LFU/</id>
-        <link href="https://lper.github.io/post/CACHE-FIFO-VS-LRU-VS-LFU/">
+        <id>https://lper.cn/post/CACHE-FIFO-VS-LRU-VS-LFU/</id>
+        <link href="https://lper.cn/post/CACHE-FIFO-VS-LRU-VS-LFU/">
         </link>
         <updated>2020-05-29T10:35:48.000Z</updated>
     </entry>
     <entry>
         <title type="html"><![CDATA[ETF 基金与 LOF 基金的区别]]></title>
-        <id>https://lper.github.io/post/etf-lof-ji-jin-diff/</id>
-        <link href="https://lper.github.io/post/etf-lof-ji-jin-diff/">
+        <id>https://lper.cn/post/etf-lof-ji-jin-diff/</id>
+        <link href="https://lper.cn/post/etf-lof-ji-jin-diff/">
         </link>
         <updated>2020-05-29T02:41:40.000Z</updated>
     </entry>
     <entry>
         <title type="html"><![CDATA[走进 Golang 之 Channel 的使用]]></title>
-        <id>https://lper.github.io/post/zou-jin-golang-zhi-channel-de-shi-yong/</id>
-        <link href="https://lper.github.io/post/zou-jin-golang-zhi-channel-de-shi-yong/">
+        <id>https://lper.cn/post/zou-jin-golang-zhi-channel-de-shi-yong/</id>
+        <link href="https://lper.cn/post/zou-jin-golang-zhi-channel-de-shi-yong/">
         </link>
         <updated>2020-05-28T02:59:25.000Z</updated>
     </entry>
     <entry>
         <title type="html"><![CDATA[[译] 如何写好 Go 代码]]></title>
-        <id>https://lper.github.io/post/yi-ru-he-xie-hao-go-dai-ma/</id>
-        <link href="https://lper.github.io/post/yi-ru-he-xie-hao-go-dai-ma/">
+        <id>https://lper.cn/post/yi-ru-he-xie-hao-go-dai-ma/</id>
+        <link href="https://lper.cn/post/yi-ru-he-xie-hao-go-dai-ma/">
         </link>
         <updated>2020-05-27T06:44:22.000Z</updated>
     </entry>
     <entry>
         <title type="html"><![CDATA[Golang 中使用 JSON 的小技巧]]></title>
-        <id>https://lper.github.io/post/golang-json-ji-qiao/</id>
-        <link href="https://lper.github.io/post/golang-json-ji-qiao/">
+        <id>https://lper.cn/post/golang-json-ji-qiao/</id>
+        <link href="https://lper.cn/post/golang-json-ji-qiao/">
         </link>
         <updated>2020-05-27T06:07:37.000Z</updated>
     </entry>
     <entry>
         <title type="html"><![CDATA[如何投资自己（可行方法论：附赠工具表格）]]></title>
-        <id>https://lper.github.io/post/ru-he-tou-zi-zi-ji-ke-xing-fang-fa-lun-fu-zeng-gong-ju-biao-ge/</id>
-        <link href="https://lper.github.io/post/ru-he-tou-zi-zi-ji-ke-xing-fang-fa-lun-fu-zeng-gong-ju-biao-ge/">
+        <id>https://lper.cn/post/ru-he-tou-zi-zi-ji-ke-xing-fang-fa-lun-fu-zeng-gong-ju-biao-ge/</id>
+        <link href="https://lper.cn/post/ru-he-tou-zi-zi-ji-ke-xing-fang-fa-lun-fu-zeng-gong-ju-biao-ge/">
         </link>
         <updated>2020-05-26T07:32:22.000Z</updated>
     </entry>
