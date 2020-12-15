@@ -1,0 +1,305 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>使用 Brotli 提高网站访问速度 | 乐于分享</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://lper.cn/favicon.ico">
+<link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://lper.cn/styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://lper.cn">
+  <img class="avatar" src="https://lper.cn/images/avatar.png" alt="">
+  </a>
+  <h1 class="site-title">
+    乐于分享
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/lper" target="_blank">
+          <i class="fab fa-github"></i>
+        </a>
+      
+    
+      
+    
+      
+        <a href="https://www.weibo.com/lperzone" target="_blank">
+          <i class="fab fa-weibo"></i>
+        </a>
+      
+    
+      
+        <a href="https://zhihu.com/people/lper" target="_blank">
+          <i class="fab fa-zhihu"></i>
+        </a>
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              使用 Brotli 提高网站访问速度
+            </h2>
+            <div class="post-info">
+              <span>
+                2020-12-15
+              </span>
+              <span>
+                6 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <p>在优化网站打开速度上，我们有很多的方法，而其中一个就是减少诸如 Javascript 和 CSS 等资源文件的大小，而减少文件大小的方法除了在代码上下功夫外，最常用的方法就是使用压缩算法对文件进行压缩。</p>
+<p>目前，网站普遍使用的是<code>gzip</code>压缩算法，当然你可能还知道<code>deflate</code>和<code>sdch</code>算法，但是最近两年新兴了一个新的压缩算法：<a href="https://en.wikipedia.org/wiki/Brotli">Brotli</a>，下面我将会对这个算法进行简单的介绍。</p>
+<h3 id="什么是-brotli">什么是 Brotli</h3>
+<p>Brotli 最初发布于 2015 年，用于网络字体的离线压缩。Google 软件工程师在 2015 年 9 月发布了包含通用无损数据压缩的 Brotli 增强版本，特别侧重于 HTTP 压缩。其中的编码器被部分改写以提高压缩比，编码器和解码器都提高了速度，流式 API 已被改进，增加更多压缩质量级别。新版本还展现了跨平台的性能改进，以及减少解码所需的内存。</p>
+<p>与常见的通用压缩算法不同，Brotli 使用一个预定义的 120 千字节字典。该字典包含超过 13000 个常用单词、短语和其他子字符串，这些来自一个文本和 HTML 文档的大型语料库。预定义的算法可以提升较小文件的压缩密度。</p>
+<p>使用 brotli 取代 deflate 来对文本文件压缩通常可以增加 20% 的压缩密度，而压缩与解压缩速度则大致不变。</p>
+<h3 id="浏览器支持情况">浏览器支持情况</h3>
+<figure data-type="image" tabindex="1"><img src="https://raw.sevencdn.com/lper/document/master/img/196812783-5913d017054ae_articlex.png" alt="" loading="lazy"></figure>
+<ul>
+<li>
+<p>Chrome 从版本 49 开始支持，但是完整的支持是在版本 50（2016 年 5 月 27 日开始支持）。</p>
+</li>
+<li>
+<p>Firefox 从版本 52 开始支持。</p>
+</li>
+<li>
+<p>IE 全版本不支持，但是 Edge 从版本 15 开始支持。</p>
+</li>
+<li>
+<p>Safari 全系不支持。</p>
+</li>
+<li>
+<p>Opera 从版本 44 开始支持。</p>
+</li>
+</ul>
+<p>支持 Brotli 压缩算法的浏览器使用的内容编码类型为<code>br</code>，例如以下是 Chrome 浏览器请求头里<code>Accept-Encoding</code>的值：</p>
+<pre><code>Accept-Encoding: gzip, deflate, sdch, br
+</code></pre>
+<p>如果服务端支持 Brotli 算法，则会返回以下的响应头：</p>
+<pre><code>Content-Encoding: br
+</code></pre>
+<blockquote>
+<p>需要注意的是，只有在 HTTPS 的情况下，浏览器才会发送<code>br</code>这个 Accept-Encoding。</p>
+</blockquote>
+<h3 id="关于性能">关于性能</h3>
+<p>下面是 LinkedIn 做的一个性能测试结果：</p>
+<figure data-type="image" tabindex="2"><img src="https://raw.sevencdn.com/lper/document/master/img/1954126711-5916930f96151_articlex.png" alt="" loading="lazy"></figure>
+<table><thead><tr><th>Algorithm</th><th>Quality</th><th>Compression Time (ms)</th><th>Decompression Time (ms)</th></tr></thead><tbody><tr><td>gzip</td><td>6</td><td>169</td><td>35</td></tr><tr><td>gzip</td><td>9</td><td>284</td><td>27</td></tr><tr><td>zopfli</td><td>15</td><td>37,847</td><td>32</td></tr><tr><td>zopfli</td><td>100</td><td>194,460</td><td>38</td></tr><tr><td>zopfli</td><td>1000</td><td>1,855,480</td><td>29</td></tr><tr><td>brotli</td><td>4</td><td>109</td><td>24</td></tr><tr><td>brotli</td><td>5</td><td>193</td><td>20</td></tr><tr><td>brotli</td><td>5</td><td>517</td><td>23</td></tr><tr><td>brotli</td><td>11</td><td>11,913</td><td>22</td></tr></tbody></table>
+<p>可以看到，Brotli 的压缩率更高，意味着通过 Brotli 算法压缩的文件，文件大小更小，但是由表格可以看到，Brotli 的压缩时间比 gzip 要多，而解压时间则相当。所以在运行中（on-the-fly）使用 Brotli 算法压缩文件可能并不是一个很好的方案，下面我们再探讨下。</p>
+<p>更多的评测可以看以下两个链接：</p>
+<ul>
+<li>
+<p><a href="https://cran.r-project.org/web/packages/brotli/vignettes/benchmarks.html"></a><a href="https://cran.r-project.org/web/packages/brotli/vignettes/benchmarks.html">https://cran.r-project.org/we...</a></p>
+</li>
+<li>
+<p><a href="https://hacks.mozilla.org/2015/11/better-than-gzip-compression-with-brotli/"></a><a href="https://hacks.mozilla.org/2015/11/better-than-gzip-compression-with-brotli/">https://hacks.mozilla.org/201...</a></p>
+</li>
+</ul>
+<h3 id="使用-brotli">使用 Brotli</h3>
+<p>Brotli 有更高的压缩率，但是同时也需要更长的压缩时间，所以在请求的时候实时进行压缩并不是一个很好的实践（当然你可以这么做）。我们可以预先对静态文件进行压缩，然后直接提供给客户端，这样我们就避免了 Brotli 压缩效率低的问题，同时使用这个方式，我们可以使用压缩质量最高的等级去压缩文件，最大程度的去减小文件的大小。</p>
+<p>另外，由于不是所有浏览器都支持 Brotli 算法，所以在服务端，我们需要同时提供两种文件，一个是经过 Brotli 压缩的文件，一个是原始文件，在浏览器不支持 Brotli 的情况下，我们可以使用 gzip 去压缩原始文件提供给客户端。</p>
+<p>具体的实现可以参照下 Linkin 的这篇文章：<a href="https://engineering.linkedin.com/blog/2017/05/boosting-site-speed-using-brotli-compression"></a><a href="https://engineering.linkedin.com/blog/2017/05/boosting-site-speed-using-brotli-compression">https://engineering.linkedin....</a>。</p>
+<h3 id="在-nginx-上启用-brotli">在 Nginx 上启用 Brotli</h3>
+<p>nginx 目前并不支持 Brotli 算法，需要使用第三方模块，例如<code>ngx_brotli</code>进行实现。下面是简单的安装步骤。</p>
+<h4 id="安装及配置">安装及配置</h4>
+<p>下载<code>ngx_brotli</code>模块及其依赖：</p>
+<pre><code>$ git clone https://github.com/google/ngx_brotli
+$ cd ngx_brotli
+$ git submodule update --init
+</code></pre>
+<p>编译 Nginx 时加入<code>ngx_brotli</code>模块：</p>
+<pre><code>$ cd /path/to/nginx_source/
+$ ./configure --add-module=/path/to/ngx_brotli
+$ make &amp;&amp; make install
+</code></pre>
+<p>在 Nginx 配置文件的<code>http</code>块下增加以下指令：</p>
+<pre><code>brotli               on;  
+brotli_comp_level    6;  
+brotli_buffers       16 8k;  
+brotli_min_length    20;  
+brotli_types         *;
+</code></pre>
+<p>以上是<code>on-the-fly</code>的配置方式，如果是要响应已经使用 Brotli 压缩过的文件，则使用<code>brotli_static</code>指令。下面是<code>ngx_brotli</code>模块相关指令的一些简单解析。</p>
+<h4 id="模块指令解析">模块指令解析</h4>
+<h5 id="brotli_static">brotli_static</h5>
+<p>启用后将会检查是否存在带有<code>br</code>扩展的预先压缩过的文件。如果值为<code>always</code>，则总是使用压缩过的文件，而不判断浏览器是否支持。</p>
+<h5 id="brotli">brotli</h5>
+<p>是否启用在 on-the-fly 方式压缩文件，启用后，将会在响应时对文件进行压缩并返回。</p>
+<h5 id="brotli_types">brotli_types</h5>
+<p>指定对哪些内容编码类型进行压缩。<code>text/html</code>内容总是会被进行压缩。</p>
+<h5 id="brotli_buffers">brotli_buffers</h5>
+<p>设置缓冲的数量和大小。大小默认为一个内存页的大小，也就是<code>4k</code>或者<code>8k</code>。</p>
+<h5 id="brotli_comp_level">brotli_comp_level</h5>
+<p>设置压缩质量等级。取值范围是 0 到 11.</p>
+<h5 id="brotli_window">brotli_window</h5>
+<p>设置窗口大小。</p>
+<h5 id="brotli_min_length">brotli_min_length</h5>
+<p>设置需要进行压缩的最小响应大小。</p>
+<blockquote>
+<p>具体信息请参看：<a href="https://github.com/google/ngx_brotli"></a><a href="https://github.com/google/ngx_brotli">https://github.com/google/ngx...</a></p>
+</blockquote>
+<h3 id="参考">参考</h3>
+<ul>
+<li>
+<p><a href="https://en.wikipedia.org/wiki/Brotli"></a><a href="https://en.wikipedia.org/wiki/Brotli">https://en.wikipedia.org/wiki...</a></p>
+</li>
+<li>
+<p><a href="https://engineering.linkedin.com/blog/2017/05/boosting-site-speed-using-brotli-compression"></a><a href="https://engineering.linkedin.com/blog/2017/05/boosting-site-speed-using-brotli-compression">https://engineering.linkedin....</a></p>
+</li>
+<li>
+<p><a href="https://github.com/google/ngx_brotli"></a><a href="https://github.com/google/ngx_brotli">https://github.com/google/ngx...</a></p>
+</li>
+<li>
+<p><a href="http://caniuse.com/#search=brotli"></a><a href="http://caniuse.com/#search=brotli">http://caniuse.com/#search=br...</a></p>
+</li>
+</ul>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#%E4%BB%80%E4%B9%88%E6%98%AF-brotli">什么是 Brotli</a></li>
+<li><a href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E6%94%AF%E6%8C%81%E6%83%85%E5%86%B5">浏览器支持情况</a></li>
+<li><a href="#%E5%85%B3%E4%BA%8E%E6%80%A7%E8%83%BD">关于性能</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8-brotli">使用 Brotli</a></li>
+<li><a href="#%E5%9C%A8-nginx-%E4%B8%8A%E5%90%AF%E7%94%A8-brotli">在 Nginx 上启用 Brotli</a>
+<ul>
+<li><a href="#%E5%AE%89%E8%A3%85%E5%8F%8A%E9%85%8D%E7%BD%AE">安装及配置</a></li>
+<li><a href="#%E6%A8%A1%E5%9D%97%E6%8C%87%E4%BB%A4%E8%A7%A3%E6%9E%90">模块指令解析</a>
+<ul>
+<li><a href="#brotli_static">brotli_static</a></li>
+<li><a href="#brotli">brotli</a></li>
+<li><a href="#brotli_types">brotli_types</a></li>
+<li><a href="#brotli_buffers">brotli_buffers</a></li>
+<li><a href="#brotli_comp_level">brotli_comp_level</a></li>
+<li><a href="#brotli_window">brotli_window</a></li>
+<li><a href="#brotli_min_length">brotli_min_length</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E5%8F%82%E8%80%83">参考</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://lper.cn/post/xin-de-idea202024-ban-ben-ji-huo/">
+              <h3 class="post-title">
+                新的`Idea2020.2.4` 版本激活
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://lper.cn/atom.xml" target="_blank">RSS</a>
+</div>
+
+<script>
+  hljs.initHighlightingOnLoad()
+
+  let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+  // This should probably be throttled.
+  // Especially because it triggers during smooth scrolling.
+  // https://lodash.com/docs/4.17.10#throttle
+  // You could do like...
+  // window.addEventListener("scroll", () => {
+  //    _.throttle(doThatStuff, 100);
+  // });
+  // Only not doing it here to keep this Pen dependency-free.
+
+  window.addEventListener("scroll", event => {
+    let fromTop = window.scrollY;
+
+    mainNavLinks.forEach((link, index) => {
+      let section = document.getElementById(decodeURI(link.hash).substring(1));
+      let nextSection = null
+      if (mainNavLinks[index + 1]) {
+        nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+      }
+      console.log('section.offsetHeight', section.offsetHeight);
+      if (section.offsetTop <= fromTop) {
+        if (nextSection) {
+          if (nextSection.offsetTop > fromTop) {
+            link.classList.add("current");
+          } else {
+            link.classList.remove("current");    
+          }
+        } else {
+          link.classList.add("current");
+        }
+      } else {
+        link.classList.remove("current");
+      }
+    });
+  });
+
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>
