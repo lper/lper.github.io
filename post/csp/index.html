@@ -1,0 +1,322 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>网页安全政策（CSP） | 乐于分享</title>
+<meta name="description" content="温故而知新" />
+<link rel="shortcut icon" href="https://lper.cn/favicon.ico">
+<link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://lper.cn/styles/main.css">
+
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://lper.cn">
+  <img class="avatar" src="https://lper.cn/images/avatar.png" alt="">
+  </a>
+  <h1 class="site-title">
+    乐于分享
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/lper" target="_blank">
+          <i class="fab fa-github"></i>
+        </a>
+      
+    
+      
+    
+      
+        <a href="https://www.weibo.com/lperzone" target="_blank">
+          <i class="fab fa-weibo"></i>
+        </a>
+      
+    
+      
+        <a href="https://zhihu.com/people/lper" target="_blank">
+          <i class="fab fa-zhihu"></i>
+        </a>
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              网页安全政策（CSP）
+            </h2>
+            <div class="post-info">
+              <span>
+                2020-12-21
+              </span>
+              <span>
+                4 min read
+              </span>
+              
+                <a href="https://lper.cn/tag/9UIEydYiP/" class="post-tag">
+                  # CSP
+                </a>
+              
+                <a href="https://lper.cn/tag/DjSL8BpaA/" class="post-tag">
+                  # 网页安全政策
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <p>#Content Security Polic (网页安全政策,缩写 CSP)<br>
+CSP是一种由开发者定义的安全性政策性申明，通过CSP所约束的的规责指定可信的内容来源（这里的内容可以指脚本、图片、iframe、fton、style等等可能的远程的资源）。通过CSP协定，让WEB处于一个安全的运行环境中。</p>
+<p>CSP 大大增强了网页的安全性。攻击者即使发现了漏洞，也没法注入脚本，除非还控制了一台列入了白名单的可信主机。</p>
+<p>##两种方法可以启用 CSP。<br>
+一种是通过 HTTP 头信息的Content-Security-Policy的字段</p>
+<pre><code>Content-Security-Policy: script-src 'self'; object-src 'none';
+style-src cdn.example.org third-party.org; child-src https:
+</code></pre>
+<p>另一种是通过网页的<meta>标签<br>
+<meta http-equiv="Content-Security-Policy" content="script-src 'self'; object-src 'none'; style-src cdn.example.org third-party.org; child-src https:"></p>
+<p>##资源加载限制指令表</p>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tbody>
+    <tr>
+      <th>指令</th>
+      <th>指令值示例</th>
+      <th>说明</th>
+    </tr>
+    <tr>
+      <td>default-src</td>
+      <td>'self' cnd.a.com</td>
+      <td><p>定义针对所有类型（js、image、css、web font，ajax请求，iframe，多媒体等）资源的默认加载策略，某类型资源如果没有单独定义策略，就使用默认的。</p></td>
+    </tr>
+    <tr>
+      <td>script-src</td>
+      <td>'self' js.a.com</td>
+      <td>定义针对JavaScript的加载策略。</td>
+    </tr>
+    <tr>
+      <td>style-src</td>
+      <td>'self' css.a.com</td>
+      <td>定义针对样式的加载策略。</td>
+    </tr>
+    <tr>
+      <td>img-src</td>
+      <td>'self' img.a.com</td>
+      <td>定义针对图片的加载策略。</td>
+    </tr>
+    <tr>
+      <td>connect-src</td>
+      <td>'self'</td>
+      <td><p>针对Ajax、WebSocket等请求的加载策略。不允许的情况下，浏览器会模拟一个状态为400的响应。</p></td>
+    </tr>
+    <tr>
+      <td>font-src</td>
+      <td>font.a.com</td>
+      <td>针对Web Font的加载策略。</td>
+    </tr>
+    <tr>
+      <td>object-src</td>
+      <td>'self'</td>
+      <td>针对&lt;object&gt;、&lt;embed&gt;或&lt;applet&gt;等标签引入的flash等插件的加载策略。</td>
+    </tr>
+    <tr>
+      <td>media-src</td>
+      <td>media.a.com</td>
+      <td>针对&lt;audio&gt;或&lt;video&gt;等标签引入的html多媒体的加载策略。</td>
+    </tr>
+    <tr>
+      <td>frame-src</td>
+      <td>'self'</td>
+      <td>针对frame的加载策略。</td>
+    </tr>
+    <tr>
+      <td>sandbox</td>
+      <td>allow-forms</td>
+      <td><p>对请求的资源启用sandbox（类似于iframe的sandbox属性）。</p></td>
+    </tr>
+    <tr>
+      <td>report-uri</td>
+      <td>/report-uri</td>
+      <td><p>告诉浏览器如果请求的资源不被策略允许时，往哪个地址提交日志信息。</p>
+        <p>特别的：如果只想让浏览器汇报日志，而不阻止任何内容。可以改用Content-Security-Policy-Report-Only响应头。</p></td>
+    </tr>
+  </tbody>
+</table>
+<p>##指令值组合说明</p>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tbody>
+    <tr>
+      <th>指令值</th>
+      <th>指令示例</th>
+      <th>说明</th>
+    </tr>
+    <tr>
+      <td>*</td>
+      <td>img-src *</td>
+      <td>允许任何内容。</td>
+    </tr>
+    <tr>
+      <td>'none'</td>
+      <td>img-src 'none'</td>
+      <td>不允许任何内容。</td>
+    </tr>
+    <tr>
+      <td>'self'</td>
+      <td>img-src 'self'</td>
+      <td>允许来自相同来源的内容（相同的协议、域名和端口）。</td>
+    </tr>
+    <tr>
+      <td>data</td>
+      <td>img-src data</td>
+      <td>允许data:协议（例如base64编码的图片）。</td>
+    </tr>
+    <tr>
+      <td><em>www.a.com</em></td>
+      <td>img-src img.a.com</td>
+      <td>允许加载指定域名的资源。</td>
+    </tr>
+    <tr>
+      <td><em>*.a.com</em></td>
+      <td>img-src *.a.com</td>
+      <td>允许加载a.com任何子域的资源。</td>
+    </tr>
+    <tr>
+      <td><em>https://img.com</em></td>
+      <td>img-src https://img.com</td>
+      <td>允许加载img.com的https资源（协议需匹配）。</td>
+    </tr>
+    <tr>
+      <td>https:</td>
+      <td>img-src https:</td>
+      <td>允许加载https资源。</td>
+    </tr>
+    <tr>
+      <td>'unsafe-inline'</td>
+      <td>script-src 'unsafe-inline'</td>
+      <td><p>允许加载inline资源（例如常见的style属性，onclick，inline js和inline css等等）。</p></td>
+    </tr>
+    <tr>
+      <td>'unsafe-eval'</td>
+      <td>script-src 'unsafe-eval'</td>
+      <td>允许加载动态js代码，例如eval()。</td>
+    </tr>
+  </tbody>
+</table>
+<p>##运营商劫持临时解决方案<br>
+<!--脚本加载白名单 【临时解决方案，后续还是要使用https来解决这个问题】--><br>
+<meta http-equiv="Content-Security-Policy" content="script-src 'unsafe-inline' 'unsafe-eval' *.sjzhushou.com *.xunlei.com"></p>
+<p>##浏览器兼容性以及相关资料</p>
+<ul>
+<li><a href="http://caniuse.com/#feat=contentsecuritypolicy" title="contentsecuritypolicy ">http://caniuse.com/#feat=contentsecuritypolicy </a></li>
+<li><a href="http://www.html5rocks.com/en/tutorials/security/content-security-policy/" title="content-security-policy">http://www.html5rocks.com/en/tutorials/security/content-security-policy/</a></li>
+</ul>
+
+              </div>
+              <div class="toc-container">
+                
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://lper.cn/post/sui-dao-ji-zhu-zhi-dns-he-icmp-yu-qi-jian-ce-fang-yu/">
+              <h3 class="post-title">
+                隧道技术之 DNS 和 ICMP 与其检测防御
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | 
+  <a class="rss" href="https://lper.cn/atom.xml" target="_blank">RSS</a>
+</div>
+<!-- Cloudflare Web Analytics -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "4ee033ef2fc440ffa89198da8c6b19b8"}'></script>
+<!-- End Cloudflare Web Analytics -->
+<script>
+  hljs.initHighlightingOnLoad()
+
+  let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+  // This should probably be throttled.
+  // Especially because it triggers during smooth scrolling.
+  // https://lodash.com/docs/4.17.10#throttle
+  // You could do like...
+  // window.addEventListener("scroll", () => {
+  //    _.throttle(doThatStuff, 100);
+  // });
+  // Only not doing it here to keep this Pen dependency-free.
+
+  window.addEventListener("scroll", event => {
+    let fromTop = window.scrollY;
+
+    mainNavLinks.forEach((link, index) => {
+      let section = document.getElementById(decodeURI(link.hash).substring(1));
+      let nextSection = null
+      if (mainNavLinks[index + 1]) {
+        nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+      }
+      console.log('section.offsetHeight', section.offsetHeight);
+      if (section.offsetTop <= fromTop) {
+        if (nextSection) {
+          if (nextSection.offsetTop > fromTop) {
+            link.classList.add("current");
+          } else {
+            link.classList.remove("current");    
+          }
+        } else {
+          link.classList.add("current");
+        }
+      } else {
+        link.classList.remove("current");
+      }
+    });
+  });
+
+</script>
+
+      </div>
+    </div>
+  </body>
+</html>
