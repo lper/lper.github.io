@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://lper.cn</id>
     <title>乐于分享</title>
-    <updated>2020-12-28T03:15:41.452Z</updated>
+    <updated>2020-12-28T03:18:19.076Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://lper.cn"/>
     <link rel="self" href="https://lper.cn/atom.xml"/>
@@ -12,8 +12,8 @@
     <rights>All rights reserved 2020, 乐于分享</rights>
     <entry>
         <title type="html"><![CDATA[盘点新房收流程及注意事项]]></title>
-        <id>https://lper.cn/post/pan-dian-xin-fang-shou-liu-cheng-ji-zhu-yi-shi-xiang/</id>
-        <link href="https://lper.cn/post/pan-dian-xin-fang-shou-liu-cheng-ji-zhu-yi-shi-xiang/">
+        <id>https://lper.cn/post/house-flow/</id>
+        <link href="https://lper.cn/post/house-flow/">
         </link>
         <updated>2020-12-28T03:07:49.000Z</updated>
     </entry>
