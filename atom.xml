@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://lper.cn</id>
     <title>乐于分享</title>
-    <updated>2021-01-22T08:33:10.036Z</updated>
+    <updated>2021-02-19T08:42:17.648Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://lper.cn"/>
     <link rel="self" href="https://lper.cn/atom.xml"/>
@@ -11,11 +11,11 @@
     <icon>https://lper.cn/favicon.ico</icon>
     <rights>All rights reserved 2021, 乐于分享</rights>
     <entry>
-        <title type="html"><![CDATA[01月22日-资讯以及操作整理]]></title>
-        <id>https://lper.cn/post/01-yue-22-ri-zi-xun-yi-ji-cao-zuo-zheng-li/</id>
-        <link href="https://lper.cn/post/01-yue-22-ri-zi-xun-yi-ji-cao-zuo-zheng-li/">
+        <title type="html"><![CDATA[狂人马斯克，为什么能频频成功跨界？可能是他掌握了这种思维]]></title>
+        <id>https://lper.cn/post/kuang-ren-ma-si-ke-wei-shi-me-neng-pin-pin-cheng-gong-kua-jie-ke-neng-shi-ta-zhang-wo-liao-zhe-chong-si-wei/</id>
+        <link href="https://lper.cn/post/kuang-ren-ma-si-ke-wei-shi-me-neng-pin-pin-cheng-gong-kua-jie-ke-neng-shi-ta-zhang-wo-liao-zhe-chong-si-wei/">
         </link>
-        <updated>2021-01-22T08:17:16.000Z</updated>
+        <updated>2021-02-19T08:35:43.000Z</updated>
     </entry>
     <entry>
         <title type="html"><![CDATA[突发！蚂蚁不可能在中国上市了！]]></title>
