@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://lper.cn</id>
     <title>乐于分享</title>
-    <updated>2021-02-19T08:43:29.176Z</updated>
+    <updated>2021-08-23T09:10:29.001Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://lper.cn"/>
     <link rel="self" href="https://lper.cn/atom.xml"/>
@@ -10,6 +10,20 @@
     <logo>https://lper.cn/images/avatar.png</logo>
     <icon>https://lper.cn/favicon.ico</icon>
     <rights>All rights reserved 2021, 乐于分享</rights>
+    <entry>
+        <title type="html"><![CDATA[WSL 安装及升级 WSL2]]></title>
+        <id>https://lper.cn/post/wsl-an-zhuang-ji-sheng-ji-wsl2/</id>
+        <link href="https://lper.cn/post/wsl-an-zhuang-ji-sheng-ji-wsl2/">
+        </link>
+        <updated>2021-08-23T09:09:48.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[window 中关于端口被占用的解决 443 failed: port is already allocat.]]></title>
+        <id>https://lper.cn/post/window-443-failed/</id>
+        <link href="https://lper.cn/post/window-443-failed/">
+        </link>
+        <updated>2021-08-23T09:05:30.000Z</updated>
+    </entry>
     <entry>
         <title type="html"><![CDATA[狂人马斯克，为什么能频频成功跨界？可能是他掌握了这种思维]]></title>
         <id>https://lper.cn/post/kuang-ren-ma-si-ke-wei-shi-me-neng-pin-pin-cheng-gong-kua-jie-ke-neng-shi-ta-zhang-wo-liao-zhe-chong-si-wei/</id>
@@ -65,19 +79,5 @@
         <link href="https://lper.cn/post/xin-de-idea202024-ban-ben-ji-huo/">
         </link>
         <updated>2020-11-30T11:42:17.000Z</updated>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[多种GitHub加速方式]]></title>
-        <id>https://lper.cn/post/duo-chong-github-jia-su-fang-shi/</id>
-        <link href="https://lper.cn/post/duo-chong-github-jia-su-fang-shi/">
-        </link>
-        <updated>2020-11-27T06:58:45.000Z</updated>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[72% 网民收入不足 5k，月薪过万在中国职场到底算什么水平？]]></title>
-        <id>https://lper.cn/post/72-ping/</id>
-        <link href="https://lper.cn/post/72-ping/">
-        </link>
-        <updated>2020-06-02T02:51:02.000Z</updated>
     </entry>
 </feed>
