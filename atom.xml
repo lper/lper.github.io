@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://lper.cn</id>
-    <title>乐于分享</title>
-    <updated>2021-09-09T11:03:01.440Z</updated>
+    <title>LPER</title>
+    <updated>2021-09-22T02:16:59.474Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://lper.cn"/>
     <link rel="self" href="https://lper.cn/atom.xml"/>
-    <subtitle>温故而知新</subtitle>
+    <subtitle>技术资讯，温故而知，乐于分享</subtitle>
     <logo>https://lper.cn/images/avatar.png</logo>
     <icon>https://lper.cn/favicon.ico</icon>
-    <rights>All rights reserved 2021, 乐于分享</rights>
+    <rights>All rights reserved 2021, LPER</rights>
+    <entry>
+        <title type="html"><![CDATA[Golang 新手可能会踩的 50 个坑]]></title>
+        <id>https://lper.cn/post/golang-xin-shou-ke-neng-hui-cai-de-50-ge-keng/</id>
+        <link href="https://lper.cn/post/golang-xin-shou-ke-neng-hui-cai-de-50-ge-keng/">
+        </link>
+        <updated>2021-09-22T02:12:20.000Z</updated>
+    </entry>
     <entry>
         <title type="html"><![CDATA[面向未来的设计协作工具 Figma 入门教程]]></title>
         <id>https://lper.cn/post/figma-crash-course/</id>
@@ -72,12 +79,5 @@
         <link href="https://lper.cn/post/csp/">
         </link>
         <updated>2020-12-21T07:46:14.000Z</updated>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[隧道技术之 DNS 和 ICMP 与其检测防御]]></title>
-        <id>https://lper.cn/post/sui-dao-ji-zhu-zhi-dns-he-icmp-yu-qi-jian-ce-fang-yu/</id>
-        <link href="https://lper.cn/post/sui-dao-ji-zhu-zhi-dns-he-icmp-yu-qi-jian-ce-fang-yu/">
-        </link>
-        <updated>2020-12-17T06:07:12.000Z</updated>
     </entry>
 </feed>
