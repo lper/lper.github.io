@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://lper.cn</id>
+    <title>LPER</title>
+    <updated>2026-05-10T20:25:58.271Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://lper.cn"/>
+    <link rel="self" href="https://lper.cn/atom.xml"/>
+    <subtitle>技术资讯，温故而知，乐于分享</subtitle>
+    <logo>https://lper.cn/images/avatar.png</logo>
+    <icon>https://lper.cn/favicon.ico</icon>
+    <rights>All rights reserved 2026, LPER</rights>
+    <entry>
+        <title type="html"><![CDATA[解决 Docker 构建时出现的 WARNING_ Ignoring  alpine_v3.13_ Permission denied]]></title>
+        <id>https://lper.cn/post/jie-jue-docker-gou-jian-shi-chu-xian-de-warning_-ignoring-alpine_v313_-permission-denied/</id>
+        <link href="https://lper.cn/post/jie-jue-docker-gou-jian-shi-chu-xian-de-warning_-ignoring-alpine_v313_-permission-denied/">
+        </link>
+        <updated>2021-09-26T10:18:00.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[突破防火墙 NAT 的内外网隔离，真黑客想访问谁就访问谁！]]></title>
+        <id>https://lper.cn/post/nat-firewall/</id>
+        <link href="https://lper.cn/post/nat-firewall/">
+        </link>
+        <updated>2021-09-23T02:29:26.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Golang 新手可能会踩的 50 个坑]]></title>
+        <id>https://lper.cn/post/golang-xin-shou-ke-neng-hui-cai-de-50-ge-keng/</id>
+        <link href="https://lper.cn/post/golang-xin-shou-ke-neng-hui-cai-de-50-ge-keng/">
+        </link>
+        <updated>2021-09-22T02:12:20.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[面向未来的设计协作工具 Figma 入门教程]]></title>
+        <id>https://lper.cn/post/figma-crash-course/</id>
+        <link href="https://lper.cn/post/figma-crash-course/">
+        </link>
+        <updated>2021-09-09T10:13:18.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[如何使用 Git 和 Git 工作流——实用指南]]></title>
+        <id>https://lper.cn/post/git-gitflow/</id>
+        <link href="https://lper.cn/post/git-gitflow/">
+        </link>
+        <updated>2021-09-09T09:51:24.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[uTools - 黑科技神器不能错过！]]></title>
+        <id>https://lper.cn/post/utools/</id>
+        <link href="https://lper.cn/post/utools/">
+        </link>
+        <updated>2021-09-09T08:20:13.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[kubenates 运行任务时出现 can't join IPC of container...non-shareable IPC 的错误]]></title>
+        <id>https://lper.cn/post/kubenates-cant-join-ipc-of-containernon-shareable-ipc/</id>
+        <link href="https://lper.cn/post/kubenates-cant-join-ipc-of-containernon-shareable-ipc/">
+        </link>
+        <updated>2021-09-09T07:53:53.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[WSL 安装及升级 WSL2]]></title>
+        <id>https://lper.cn/post/wsl-an-zhuang-ji-sheng-ji-wsl2/</id>
+        <link href="https://lper.cn/post/wsl-an-zhuang-ji-sheng-ji-wsl2/">
+        </link>
+        <updated>2021-08-23T09:09:48.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[window 中关于端口被占用的解决 443 failed: port is already allocat.]]></title>
+        <id>https://lper.cn/post/window-443-failed/</id>
+        <link href="https://lper.cn/post/window-443-failed/">
+        </link>
+        <updated>2021-08-23T09:05:30.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[盘点新房收流程及注意事项]]></title>
+        <id>https://lper.cn/post/house-flow/</id>
+        <link href="https://lper.cn/post/house-flow/">
+        </link>
+        <updated>2020-12-28T03:07:49.000Z</updated>
+    </entry>
+</feed>
